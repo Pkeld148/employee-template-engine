@@ -10,6 +10,8 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const employeeList = [];
+
 const promptUser = () =>
   inquirer.prompt([
     {
@@ -47,17 +49,74 @@ const promptUser = () =>
     },
     {
       type: "input",
-      name: "office",
+      name: "school",
       message: "What SCHOOL is the intern attending?",
       when: (answers) => answers.role === "Intern",
     },
   ]);
 
-// promptUser().then((answers) => console.log(answers));
+const addMorePrompt = () =>
+  inquirer.prompt([
+    {
+      type: "confirm",
+      name: "add",
+      message: "Would you like to add another employee?",
+    },
+  ]);
 
-const Paul = new Intern("Paul", 69, "Pkeld@gmail", "GTech");
-console.log(Paul);
+function init() {
+  promptUser().then((data) => {
+    switch (data.role) {
+      case "Manager":
+        let newManager = new Manager(
+          data.name,
+          data.id,
+          data.email,
+          data.office
+        );
+        employeeList.push(newManager);
+        break;
+      case "Engineer":
+        let newEngineer = new Engineer(
+          data.name,
+          data.id,
+          data.email,
+          data.github
+        );
+        employeeList.push(newEngineer);
+        break;
+      case "Intern":
+        let newIntern = new Intern(data.name, data.id, data.email, data.school);
+        employeeList.push(newIntern);
+        break;
+    }
+    console.log("Employee data saved!");
+    addMorePrompt().then((data) => {
+      if (data.add) {
+        init();
+      } else {
+        fs.writeFileSync(outputPath, render(employeeList), "utf-8"),
+          (err) =>
+            err ? console.log(err) : console.log("Your file has been created!");
+      }
+    });
+  });
+}
 
+init();
+
+//   writefileSync(outputPath, render(data), "utf-8")
+
+// function createNewManager(answers) {
+
+//     console.log("The Manager's office number is " + answers.office);
+// }
+// function createNewEngineer(answers) {
+//     console.log("Here is where you make an engineer object");
+// }
+// function createNewIntern(answers) {
+//     console.log("And finally make an intern object now");
+// }
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
