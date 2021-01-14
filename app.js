@@ -33,10 +33,31 @@ const promptUser = () =>
       name: "email",
       message: "What is the employee's EMAIL?",
     },
+    {
+      type: "input",
+      name: "office",
+      message: "What is the manager's OFFICE NUMBER?",
+      when: (answers) => answers.role === "Manager",
+    },
+    {
+      type: "input",
+      name: "github",
+      message: "What is the engineer's GITHUB NAME?",
+      when: (answers) => answers.role === "Engineer",
+    },
+    {
+      type: "input",
+      name: "office",
+      message: "What SCHOOL is the intern attending?",
+      when: (answers) => answers.role === "Intern",
+    },
   ]);
 
-  promptUser()
-  .then((answers) => console.log(answers));
+// promptUser().then((answers) => console.log(answers));
+
+const Paul = new Intern("Paul", 69, "Pkeld@gmail", "GTech");
+console.log(Paul);
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
